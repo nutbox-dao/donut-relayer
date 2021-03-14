@@ -2,12 +2,12 @@ import { parseNumber } from "../utils/helper";
 
 const TRANSFER_FEE_CRITERIA = {
   STEEM: {
-    minimum: 0.3,
-    ratio: 0.002,
+    minimum: 0.001, // 0.3,
+    ratio: 0, // 0.002,
   },
   SBD: {
-    minimum: 0.03,
-    ratio: 0.002,
+    minimum: 0.001, // 0.03,
+    ratio: 0, // 0.002,
   },
 };
 

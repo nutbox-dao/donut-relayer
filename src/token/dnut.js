@@ -5,14 +5,14 @@ import { transfer } from "../chain/steem";
 export async function wrap(fromSteem, toPolkadot, amount) {
   const symbol = amount.split(" ")[1];
   amount = parseNumber(amount).toFixed(3);
-  const res = await issueDonut(fromSteem, toPolkadot, int);
+  const res = await issueDonut(fromSteem, toPolkadot, amount);
   if (res) {
     console.log(
       "@%s wrap [%s %s] to address [%s]; result = [%s]",
-      from,
+      fromSteem,
       amount,
       symbol,
-      to,
+      toPolkadot,
       res
     );
     return true;

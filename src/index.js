@@ -72,8 +72,6 @@ async function monitorSteemGateway() {
     if (actions && actions.length > 0) {
       console.log("Process gateway actions", actions);
       actions.forEach(async (a) => await processAction(a));
-      // avoid parallel execution which may cause issues
-      // await Promise.all(actions.map((a) => processAction(a)));
     }
   });
 }

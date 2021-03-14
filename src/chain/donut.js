@@ -39,7 +39,7 @@ export const issueDonut = async (steemAccount, donutAccount, amount) => {
   const keyring = new Keyring({ type: "sr25519" });
   // alice is sudo on test mode
   const sudo_account = keyring.addFromUri(DONUT_SWAP_ACCOUNT_KEY);
-  const donut_account = keyring.addFromUri(donutAccount);
+  const donut_account = keyring.addFromAddress(donutAccount);
   const steem_account = "0x" + Buffer.from(steemAccount).toString("hex");
   const bridge_sig = "0x" + Buffer.from("dummy signature").toString("hex");
   const bn_decimals = new BN(api.registry.chainDecimals[0]);
@@ -66,7 +66,7 @@ export const issueDonut = async (steemAccount, donutAccount, amount) => {
         )
       )
       .signAndSend(sudo_account, { nonce: nonce, era: 0 }, (result) => {
-        console.log(`Current status is ${result.status}`);
+        // console.log(`Current status is ${result.status}`);
         if (result.status.isInBlock) {
           console.log(
             `Transaction included at blockHash ${result.status.asInBlock}`

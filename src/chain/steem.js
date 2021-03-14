@@ -196,7 +196,6 @@ function getActionsFromOperation(operation) {
 }
 
 function streamActions(callback) {
-  // ## Method 1: with steem-interface
   steem_interface.stream({
     on_op: (op, block_num, block_id, previous_block, trx_id, timestamp) => {
       const actions = getActionsFromOperation({
@@ -206,51 +205,6 @@ function streamActions(callback) {
       if (callback) callback(actions);
     },
   });
-
-  // ## Method 2: with dsteem
-  // const mode = STEEM_MONITORING_MODE;
-  // const state_file = STEEM_DAEMON_STATE_FILE;
-  // let { steem } = loadData(state_file);
-  // const options = {};
-  // if (mode.indexOf(".") !== -1) {
-  //   const stream_mode = mode.split(".")[1];
-  //   // 0 for Irreversible, and 1 for Latest
-  //   options.mode =
-  //     stream_mode && stream_mode.toLowerCase() === "latest"
-  //       ? STREAM_MODE.Latest
-  //       : STREAM_MODE.Irreversible;
-  // }
-  // const last_stream_block =
-  //   (steem && steem.stream && steem.stream.block) || null;
-  // if (last_stream_block) {
-  //   options.from = last_stream_block;
-  // }
-  // console.log("stream options", options);
-  // const stream = dsteem.blockchain.getOperationsStream(options);
-  // stream.on("data", (operation) => {
-  //   const actions = getActionsFromOperation(operation);
-  //   if (callback) callback(actions);
-  //   steem = {
-  //     ...steem,
-  //     ...{
-  //       stream: {
-  //         block: operation.block,
-  //         timestamp: operation.timestamp,
-  //       },
-  //     },
-  //   };
-  //   saveData(state_file, { steem });
-  // });
-  // ## Method 3: with steem.js
-  // steem.api.streamOperations(function (err, operation) {
-  //   if (!err) {
-  //     const actions = getActionsFromOperation(operation);
-  //     console.log("actions", actions);
-  //     if (callback) callback(actions);
-  //   } else {
-  //     console.log("Failed to stream operations", err);
-  //   }
-  // });
 }
 
 // Actions

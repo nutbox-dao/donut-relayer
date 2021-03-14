@@ -23,6 +23,6 @@ export async function wrap(fromSteem, toPolkadot, amount) {
 
 export async function unwrap(fromPolkadot, toSteem, amount, symbol) {
   amount = parseNumber(amount).toFixed(3);
-  const memo = `${fromPolkadot} -${amount} T${symbol}`;
+  const memo = `${fromPolkadot} -${amount} DNUT`;
   return await transfer(fromPolkadot, toSteem, amount, symbol, memo);
 }

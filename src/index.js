@@ -86,21 +86,22 @@ async function unwrapSteem(event, symbol = "STEEM") {
   });
 
   // DonutBurned: Donut Account/Steem Account/Amount
-  console.log("Details of event DonutBurned ");
-  console.log(`\t\tDonut Account: ${args[0]}`);
-  console.log(
-    `\t\tSteem Account: ${Buffer.from(args[1].slice(2), "hex").toString()}`
-  );
-  console.log(`\t\tBurned Amount: ${args[2]}`);
-  const fromTron = args[0];
-  const toSteem = args[1];
+  const fromPolkadot = args[0];
+  const toSteem = Buffer.from(args[1].slice(2), "hex").toString();
   const amount = args[2] / DONUT_PRECISION;
-  await unwrapAsSteem(fromTron, toSteem, amount, symbol);
+
+  console.log("Details of event DonutBurned ");
+  console.log(`\t\tDonut Account: ${fromPolkadot}`);
+  console.log(`\t\tSteem Account: ${toSteem}`);
+  console.log(`\t\tBurned Amount: ${amount} ${args[2]} ${DONUT_PRECISION}`);
+
+  await unwrapAsSteem(fromPolkadot, toSteem, amount, symbol);
+
   console.log(
     "unwrap %s to @%s by [%s]",
     amount + " " + symbol,
     toSteem,
-    fromTron
+    fromPolkadot
   );
 }
 

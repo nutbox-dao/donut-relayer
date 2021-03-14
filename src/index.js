@@ -1,12 +1,12 @@
 import fs from "fs";
 import { monitorGatewayActions } from "./chain/steem";
-import { wrap as wrapAsSteem, unwrap as unwrapAsSteem } from "./token/donut";
-import { watchEvent } from "./chain/event";
+import { wrap as wrapAsSteem, unwrap as unwrapAsSteem } from "./token/dnut";
+import { connect as connectDonut, watchEvent } from "./chain/donut";
 import {
   LOCAL_DATA_DIR,
   STEEM_SWAP_ACCOUNT,
   STEEM_TRANSFER_MEMO_REGEX,
-  TRON_TSTEEM_CONTRACT_ADDR,
+  DONUT_PRECISION,
 } from "./config";
 import { verifyTransferFee } from "./model/fee";
 
@@ -18,8 +18,7 @@ function initLocalStore() {
   }
 }
 
-// 1. STEEM to TSTEEM monitor && SBD to TSBD monitor
-// 2. Delegation Mining monitor
+// wrap STEEM into DNUT in Donut Chain
 async function wrapSteem(transfer) {
   let { from, to, amount, memo, _fee } = transfer;
   if (!to || to !== STEEM_SWAP_ACCOUNT) {
@@ -79,15 +78,23 @@ async function monitorSteemGateway() {
   });
 }
 
-// TSTEEM to STEEM conversion
-async function unwrapSteem(unwrappred, symbol) {
-  const result = unwrappred.result;
-  const fromTron = getTronAddr(result[1]);
-  const toSteem = result[0];
-  const amount = intToAmount(result[2]);
-  symbol =
-    symbol ||
-    (TRON_TSTEEM_CONTRACT_ADDR === unwrappred.contract ? "STEEM" : "SBD");
+// DNUT to STEEM conversion
+async function unwrapSteem(event, symbol = "STEEM") {
+  let args = [];
+  event.data.forEach((data, index) => {
+    args.push(data.toString());
+  });
+
+  // DonutBurned: Donut Account/Steem Account/Amount
+  console.log("Details of event DonutBurned ");
+  console.log(`\t\tDonut Account: ${args[0]}`);
+  console.log(
+    `\t\tSteem Account: ${Buffer.from(args[1].slice(2), "hex").toString()}`
+  );
+  console.log(`\t\tBurned Amount: ${args[2]}`);
+  const fromTron = args[0];
+  const toSteem = args[1];
+  const amount = args[2] / DONUT_PRECISION;
   await unwrapAsSteem(fromTron, toSteem, amount, symbol);
   console.log(
     "unwrap %s to @%s by [%s]",
@@ -97,19 +104,18 @@ async function unwrapSteem(unwrappred, symbol) {
   );
 }
 
-async function monitorUnwrappingEvents() {
-  await Promise.all([
-    watchEvent(unwrapSteem, "STEEM"),
-    watchEvent(unwrapSteem, "SBD"),
-    watchEvent(unwrapTSP, "SP"),
-  ]);
+async function monitorDonutEvents() {
+  connectDonut(() => {
+    // DNUT burning happened
+    watchEvent("DonutBurned", unwrapSteem);
+  });
 }
 
 async function main() {
   console.log("<<==**~~**==|  DONUT Daemon launched  |==**~~**==>>");
   initLocalStore();
   monitorSteemGateway();
-  monitorUnwrappingEvents();
+  monitorDonutEvents();
 }
 
 main();

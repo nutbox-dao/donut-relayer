@@ -272,7 +272,7 @@ export function monitorGatewayActions(callback) {
   console.log(`Steem Listener: Watch Gateway Actions in [${mode}] mode`);
 }
 
-export async function transfer(fromTron, toSteem, amount, symbol, memo) {
+export async function transfer(fromPolkadot, toSteem, amount, symbol, memo) {
   return await steem.broadcast.transferAsync(
     STEEM_SWAP_ACCOUNT_KEY,
     STEEM_SWAP_ACCOUNT,

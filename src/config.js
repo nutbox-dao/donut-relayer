@@ -36,7 +36,7 @@ export const DONUT_SWAP_ACCOUNT_KEY = b64uDec(
   process.env.DONUT_SWAP_ACCOUNT_KEY || ""
 );
 export const DONUT_ENDPOINT_URL =
-  process.env.DONUT_ENDPOINT_URL || "wss://donut.nutbox.io";
+  process.env.DONUT_ENDPOINT_URL || "wss://rpc.donut.nutbox.io";
 export const DONUT_PRECISION = 10 ** 12;
 
 // Fee Model

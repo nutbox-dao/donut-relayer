@@ -84,47 +84,6 @@ export const issueDonut = async (steemAccount, donutAccount, amount) => {
   });
 };
 
-export const burnDonut = async () => {
-  console.log(
-    "--- Submitting extrinsic to burn DNUT from donut account: ",
-    donut_account.address,
-    " ---"
-  );
-
-  return new Promise(async (resolve, reject) => {
-    if (!nonce) {
-      nonce = (
-        await api.query.system.account(sudo_account.address)
-      ).nonce.toNumber();
-    }
-    const unsub = await api.tx.sudo
-      .sudo(
-        api.tx.donutCore.sudoBurnDonut(
-          donut_account.address,
-          steem_account,
-          new BN(100000000000000),
-          bridge_sig
-        )
-      )
-      .signAndSend(sudo_account, { nonce: nonce, era: 0 }, (result) => {
-        console.log(`Current status is ${result.status}`);
-        if (result.status.isInBlock) {
-          console.log(
-            `Transaction included at blockHash ${result.status.asInBlock}`
-          );
-        } else if (result.status.isFinalized) {
-          console.log(
-            `Transaction finalized at blockHash ${result.status.asFinalized}`
-          );
-          unsub();
-          return resolve(result.status.asFinalized);
-        }
-      })
-      .catch((err) => reject(err));
-    nonce += 1;
-  });
-};
-
 export const watchEvent = (method, callback) => {
   // Subscribe to system events and look up events we care
   api.query.system.events((events) => {

@@ -38,8 +38,3 @@ export const DONUT_SWAP_ACCOUNT_KEY = b64uDec(
 export const DONUT_ENDPOINT_URL =
   process.env.DONUT_ENDPOINT_URL || "wss://rpc.donut.nutbox.io";
 export const DONUT_PRECISION = 10 ** 12;
-
-// Fee Model
-
-export const STAKING_FEE =
-  (process.env.STAKING_FEE && parseFloat(process.env.STAKING_FEE)) || 1; // STEEM
